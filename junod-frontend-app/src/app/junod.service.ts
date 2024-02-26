@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 
@@ -9,8 +9,10 @@ export class JunodService {
   private junod_app_url = 'http://localhost:8081/';
   constructor(private http: HttpClient) {}
 
-  getJunodBase(): Observable<JunodResult> {
-    return this.http.get<JunodResult>(this.junod_app_url);
+  executeJunodCommand(command: string): Observable<JunodResult> {
+    let params = new HttpParams();
+    params = params.append('command', command);
+    return this.http.get<JunodResult>(this.junod_app_url, { params: params });
   }
 }
 

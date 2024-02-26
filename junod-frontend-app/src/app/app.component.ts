@@ -1,4 +1,11 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { JunodService } from './junod.service';
@@ -34,22 +41,23 @@ export class AppComponent implements OnInit {
     this.terminalService.sendResponse(this._commandResult);
   }
 
+  inputCommand!: ElementRef<HTMLInputElement>;
+
   constructor(
     private junodService: JunodService,
-    private terminalService: TerminalService,
-    private changeDetectorRef: ChangeDetectorRef
+    private terminalService: TerminalService
   ) {}
+
   ngOnInit(): void {
-    /*  this.junodService.getJunodBase().subscribe((data) => {
-      console.log(data);
-      //data.message.replace('/n', '<br>');
-      this.data = data;
-    }); */
     this.subscription = this.terminalService.commandHandler.subscribe(
       async (command) => {
-        if (command === 'junod') {
+        console.log(this.terminal.commands);
+        if (command.length > 4 && command.split(' ')[0] === 'junod') {
           //this.terminalService.sendResponse('Ok');
-          const res = await this.junodService.getJunodBase().toPromise();
+
+          const res = await this.junodService
+            .executeJunodCommand(command)
+            .toPromise();
           if (res === undefined) {
             this.terminalService.sendResponse('Unknown command: ' + command);
             return;
@@ -60,11 +68,6 @@ export class AppComponent implements OnInit {
         } else {
           this.terminalService.sendResponse('Unknown command: ' + command);
         }
-        /* let response =
-          command === 'junod'
-            ? new Date().toDateString()
-            : 'Unknown command: ' + command;
-        this.terminalService.sendResponse(response); */
       }
     );
   }

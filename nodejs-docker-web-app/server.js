@@ -20,7 +20,11 @@ app.use((req, res, next) => {
 });
 
 app.get("/", (req, res) => {
-  const result = execSync("junod");
+  const command = req.query.command;
+  if (command.length < 5 || command.split(" ")[0] !== "junod") {
+    return res.json({ message: "Invalid command!" });
+  }
+  const result = execSync(command);
   res.json({ message: "Hello from server!", result: result.toString() });
 });
 
