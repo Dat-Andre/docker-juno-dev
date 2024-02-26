@@ -22,8 +22,6 @@ COPY junod-frontend-app/nginx.conf /etc/nginx/nginx.conf
 
 COPY --from=build /usr/local/app/dist/junod-frontend-app/browser /usr/share/nginx/html
 
-RUN service nginx restart
-
 # Install Node.js
 #RUN apt-get install --yes nodejs
 WORKDIR /
